@@ -84,10 +84,10 @@ namespace ConsoleApp1
         }
         public void CrearPizza()
         {
-            _builder.CantidadQuesos();
-            _builder.Masa();
-            _builder.Gluten();
-            _builder.Ingredientes();
+            _builder.CantidadQuesos().
+            Masa()
+            .Gluten()
+            .Ingredientes();
         }
         public Pizza EntregarPizza()
         {
