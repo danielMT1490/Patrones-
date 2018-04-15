@@ -7,46 +7,37 @@ using System.Threading.Tasks;
 namespace ConsoleApp1
 {
     //Estas dos interface son incompatibles dentro de la misma clase ya que comparten metodos con el mismo nombre
-    public interface IEjemplo
+    public sealed class Singleton
     {
-        int Suma();
-        int Resta();
-    }
-    public interface Iejemplo2
-    {
-        int Suma(int x);
-        int Resta(int y);
-
-    }
-    public class Calculo : Iejemplo2
-    {
-        
-        public int Resta(int x)
+        //La informacion que queremos que sea fija la definiremos en el constructor
+        //y sera de solo lectura ya que no queremos que se modifique
+        public readonly string[] Provincias;
+        //Declaramos un objeto estatico que será la instancia del singleton , ya que solo queremos una instancia en toda la ejecucion
+        private static Singleton instance;
+        //El objeto padock nos ayudará para cuando haya mas de un trhead en el programa no puedan dos trhead instanciar el singleton a la vez
+        private static Object padock = new Object();
+        private Singleton()
         {
-            throw new NotImplementedException();
+            Provincias = new string[] { "Burgos", "Barcelona" };
         }
-
-        public int Suma(int y)
+        //Si el objeto estatico instance es null lo creará , sino devuelcve el ya construido
+        //lock nos ayuda con el multitrheading peromitiendo que solo un hilo de ejecucion acceda al constructor.
+        public static Singleton Instance
         {
-            throw new NotImplementedException();
-        }
-    }
-    public class Adapter : IEjemplo 
-    {
-        Iejemplo2 iejemplo2;
-        int x;
-        public Adapter()
-        {
-            iejemplo2 = new Calculo();
-        }
-        public int Resta()
-        {
-            return iejemplo2.Resta(x);
-        }
-
-        public int Suma()
-        {
-            return iejemplo2.Resta(x);
+            get
+            {
+                if (instance == null)
+                {
+                    lock (padock)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new Singleton();
+                        }
+                    }
+                }
+                return instance;
+            }
         }
     }
 }
